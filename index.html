@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="UTF-8">
+	<title>Lab weather 3</title>
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<header class="head">
+		<h1>Погода здесь</h1>
+		<button class="update-btn-text">Обновить геолокацию</button>
+		<button class="update-btn"></button>
+	</header>
+
+	<main class="main1">
+
+		<section id="main-city-load">
+			<p class="main-loading-text">Подождите, данные загружаются</p>
+			<div class="loadingio-spinner-rolling-86zqmqanuly"><div class="ldio-1cvo8vz5u5n">
+				<div></div>
+			</div></div>
+		</section>
+
+		<template id="main-city">
+			<h2 class="main-city-name"></h2>
+			<img class="main-weather-img" src="" alt="Main city icon">
+			<p class="main-temp"></p>
+		</template>
+
+		<section class="properties"></section>
+
+		<h1>Избранное</h1>
+
+		<form class="add-new-city">
+			<input type="text" class="add-new-city-input" placeholder="Добавьте новый город">
+			<button class="plus">&plus;</button>
+		</form>
+
+		<template id="properties">
+			<ul>
+				<li class="weather-property">
+					<p>Ветер</p>
+					<span></span>
+				</li>
+				<li class="weather-property">
+					<p>Облачность</p>
+					<span></span>
+				</li>
+				<li class="weather-property">
+					<p>Давление</p>
+					<span></span>
+				</li>
+				<li class="weather-property">
+					<p>Влажность</p>
+					<span></span>
+				</li>
+				<li class="weather-property">
+					<p>Координаты</p>
+					<span></span>
+				</li>
+			</ul>
+		</template>
+
+		<template id="city" class="fav-city">
+			<section class="fav-city-main">
+				<section class="fav-city-main-info">
+					<h3></h3>
+					<!--
+                    <span class="fav-city-temp"></span>
+                    <img class="fav-city-img" src="">
+                     -->
+					<button class="rm">&times;</button>
+				</section>
+				<section class="info">
+					<p class="wait-city">Подождите, данные загружаются</p>
+					<div class="loadingio-spinner-rolling-86zqmqanuly"><div class="ldio-1cvo8vz5u5n">
+						<div></div>
+					</div></div>
+				</section>
+			</section>
+		</template>
+	</main>
+</body>
+<script src="js/script.js"></script>
+</html>
