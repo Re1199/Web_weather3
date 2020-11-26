@@ -55,7 +55,7 @@ MongoClient.connect(urlMongo, (err, database) => {
 
 		db = database.db();
 		db.collection('cities').find({}).toArray((err, items) => {
-			id = items[req.body.cityName]._id;
+			id = items[req.body.num]._id;
 			ObjectId = require('mongodb').ObjectID;
 			details = { '_id': new ObjectId(id) };
 			db.collection('cities').deleteOne(details, (err, item) => {

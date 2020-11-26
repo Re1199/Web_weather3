@@ -12,12 +12,20 @@ function addListeners() {
 		cityHTML = addCity(cityInput);
 
 		fetch(`${baseURL}/weather/city?q=${cityInput}`).then(resp => resp.json()).then(data => {
+			/*
 			check = isFavourite(cityInput);
 			if (data.name !== undefined && !check) {
 				putFavoriteCity(data, cityHTML);
 			} else if (check) {
 				alert('Город уже в избранном');
 				cityHTML.remove();
+			} else {
+				alert('Город не найден');
+				cityHTML.remove();
+			}
+			 */
+			if (data.name !== undefined) {
+				putFavoriteCity(data, cityHTML);
 			} else {
 				alert('Город не найден');
 				cityHTML.remove();
@@ -37,12 +45,20 @@ function addListeners() {
 }
 
 function isFavourite(name) {
+	return getFavouriteList().includes(name)
+}
+
+function getFavouriteList() {
 	fetch(`${baseURL}/favourites`, {
 		method: 'GET'
 	}).then(resp => resp.json()).then(data => {
 		favoritesCities = data ? data.name : [];
 	}).catch(err => {});
-	return favoritesCities.includes(name)
+	return favoritesCities
+}
+
+function getCityNum(name) {
+	return getFavouriteList().indexOf(name)
 }
 
 function getMainCity() {
@@ -120,18 +136,17 @@ function addCity(cityName) {
 	city = document.querySelector('main').appendChild(elem);
 
 	btnRemove = city.firstElementChild.lastElementChild;
-
 	btnRemove.addEventListener( 'click' , (event) => {
 		city = event.currentTarget.parentNode.parentNode;
 		cityName = city.getAttribute('class');
-		console.log(cityName);
+		i = getCityNum(cityName);
 
 		fetch(`${baseURL}/favourites`, {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
 			},
-			body: `cityName=${cityName}`
+			body: `num=${i}`
 		}).then(resp => resp.json()).then(() => {}).catch(err => {
 			alert("Город не удален");
 			console.log(err)
