@@ -11,29 +11,27 @@ function addListeners() {
 		cityInput = ucFirst(cityInput);
 		cityHTML = addCity(cityInput);
 
-		fetch(`${baseURL}/weather/city?q=${cityInput}`).then(resp => resp.json()).then(data => {
-			/*
-			check = isFavourite(cityInput);
-			if (data.name !== undefined && !check) {
-				putFavoriteCity(data, cityHTML);
-			} else if (check) {
-				alert('Город уже в избранном');
-				cityHTML.remove();
-			} else {
-				alert('Город не найден');
-				cityHTML.remove();
-			}
-			 */
-			if (data.name !== undefined) {
-				putFavoriteCity(data, cityHTML);
-			} else {
-				alert('Город не найден');
-				cityHTML.remove();
-			}
-		})
-		.catch(function () {
-			cityHTML.lastElementChild.innerHTML = `<p class="wait-city">Данные не получены</p>`
-		});
+		fetch(`${baseURL}/favourites`).then(resp => resp.json()).then(data => {
+			favoritesCities = data ? data : [];
+			fetch(`${baseURL}/weather/city?q=${cityInput}`).then(resp => resp.json()).then(data => {
+
+                check = favoritesCities.includes(cityInput);
+                if (data.name !== undefined && !check) {
+                    putFavoriteCity(data, cityHTML);
+                } else if (check) {
+                    alert('Город уже в избранном');
+                    cityHTML.remove();
+                } else {
+                    alert('Город не найден');
+                    cityHTML.remove();
+                }
+			})
+				.catch(function () {
+					cityHTML.lastElementChild.innerHTML = `<p class="wait-city">Данные не получены</p>`
+				});
+		}).catch(err => {});
+
+
 		document.querySelector('.add-new-city-input').value = "";
 	});
 	document.querySelector('.update-btn-text').addEventListener('click', (event) => {
@@ -42,23 +40,6 @@ function addListeners() {
 	document.querySelector('.update-btn').addEventListener('click', (event) => {
 		getMainCity();
 	});
-}
-
-function isFavourite(name) {
-	return getFavouriteList().includes(name)
-}
-
-function getFavouriteList() {
-	fetch(`${baseURL}/favourites`, {
-		method: 'GET'
-	}).then(resp => resp.json()).then(data => {
-		favoritesCities = data ? data.name : [];
-	}).catch(err => {});
-	return favoritesCities
-}
-
-function getCityNum(name) {
-	return getFavouriteList().indexOf(name)
 }
 
 function getMainCity() {
@@ -108,7 +89,6 @@ function addFavoriteCities() {
 		for (i = 0; i < favoritesCities.length; i++) {
 			addCity(favoritesCities[i]);
 		}
-
 		favoritesCitiesSet = new Set(favoritesCities);
 		for (favoriteCity of favoritesCitiesSet) {
 			fetchCity(favoriteCity)
@@ -139,20 +119,26 @@ function addCity(cityName) {
 	btnRemove.addEventListener( 'click' , (event) => {
 		city = event.currentTarget.parentNode.parentNode;
 		cityName = city.getAttribute('class');
-		i = getCityNum(cityName);
 
-		fetch(`${baseURL}/favourites`, {
-			method: 'DELETE',
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-			},
-			body: `num=${i}`
-		}).then(resp => resp.json()).then(() => {}).catch(err => {
-			alert("Город не удален");
-			console.log(err)
-		});
-
-		city.remove();
+		fetch(`${baseURL}/favourites`).then(resp => resp.json()).then(data => {
+			favoritesCities = data ? data : [];
+			i = favoritesCities.indexOf(cityName);
+			fetch(`${baseURL}/favourites`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+				},
+				body: `num=${i}`
+			}).then(resp => resp.json()).then(() => {
+				city.remove();
+			}).catch(err => {
+				alert("Город не удален");
+				console.log(err)
+			});
+		})
+			.catch(err => {
+				alert("Текущий список городов не доступен");
+			});
 	});
 	return elem;
 }
